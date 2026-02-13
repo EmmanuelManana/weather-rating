@@ -1,0 +1,15 @@
+# Kustomization for weather-rating (Rancher / any Kubernetes).
+# To use your own registry, run from this directory:
+#   kustomize edit set image weather-rating-api=YOUR_REGISTRY/weather-rating-api:latest
+#   kustomize edit set image weather-rating-web=YOUR_REGISTRY/weather-rating-web:latest
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: weather-rating
+resources:
+  - namespace.yaml
+  - configmap.yaml
+  - backend-deployment.yaml
+  - backend-service.yaml
+  - frontend-deployment.yaml
+  - frontend-service.yaml
+  - ingress.yaml

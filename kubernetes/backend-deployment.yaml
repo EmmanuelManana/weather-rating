@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: weather-rating-api
+  namespace: weather-rating
+  labels:
+    app: weather-rating-api
+    app.kubernetes.io/name: weather-rating
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: weather-rating-api
+  template:
+    metadata:
+      labels:
+        app: weather-rating-api
+        app.kubernetes.io/name: weather-rating
+    spec:
+      containers:
+        - name: api
+          image: weather-rating-api:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 4000
+              name: http
+          envFrom:
+            - configMapRef:
+                name: weather-rating-config
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "50m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 4000
+            initialDelaySeconds: 10
+            periodSeconds: 15
+            timeoutSeconds: 3
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 4000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 3
+            failureThreshold: 2

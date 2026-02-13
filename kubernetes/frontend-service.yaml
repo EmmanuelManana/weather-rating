@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: weather-rating-web
+  namespace: weather-rating
+  labels:
+    app: weather-rating-web
+    app.kubernetes.io/name: weather-rating
+spec:
+  type: ClusterIP
+  selector:
+    app: weather-rating-web
+  ports:
+    - port: 80
+      targetPort: 80
+      protocol: TCP
+      name: http

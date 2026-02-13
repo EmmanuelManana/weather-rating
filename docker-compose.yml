@@ -1,0 +1,33 @@
+services:
+  weather-rating-api:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    image: weather-rating-api:latest
+    ports:
+      - "4000:4000"
+    environment:
+      - PORT=4000
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:4000/health"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
+
+  weather-rating-web:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    image: weather-rating-web:latest
+    ports:
+      - "3000:80"
+    depends_on:
+      weather-rating-api:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:80/"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
